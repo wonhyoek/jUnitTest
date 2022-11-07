@@ -1,5 +1,6 @@
 package com.wh.jUnit.domain;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,17 @@ public class BookRepositoryTest {
     @Autowired
     private BookRepository bookRepository;
 
+    @BeforeEach
+    public void defaultSaveBook(){
+        String title = "스프링 부트";
+        String author = "아무게";
+        Book book = Book.builder()
+                .title(title)
+                .author(author)
+                .build();
+
+        bookRepository.save(book);
+    }
 
     @Test
     public void createBook(){
@@ -35,12 +47,6 @@ public class BookRepositoryTest {
 
         String title = "스프링 부트";
         String author = "아무게";
-        Book book = Book.builder()
-                .title(title)
-                .author(author)
-                .build();
-
-        bookRepository.save(book);
 
         List<Book> bookPSList = bookRepository.findAll();
 
@@ -52,12 +58,7 @@ public class BookRepositoryTest {
     public void getOneBook(){
         String title = "스프링 부트";
         String author = "아무게";
-        Book book = Book.builder()
-                .title(title)
-                .author(author)
-                .build();
 
-        bookRepository.save(book);
 
         Book bookPS = bookRepository.findById(1L).get();
 
