@@ -5,8 +5,10 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.jdbc.Sql;
 
 import java.util.List;
+import java.util.Optional;
 
 @DataJpaTest
 public class BookRepositoryTest {
@@ -55,6 +57,7 @@ public class BookRepositoryTest {
     }
 
     @Test
+    @Sql("classpath:db/tableInit.sql")
     public void getOneBook(){
         String title = "스프링 부트";
         String author = "아무게";
@@ -64,5 +67,18 @@ public class BookRepositoryTest {
 
         assertEquals(title, bookPS.getTitle());
         assertEquals(author, bookPS.getAuthor());
+    }
+
+    @Test
+    @Sql("classpath:db/tableInit.sql")
+    public void deleteBook(){
+        Long id = 1L;
+
+        bookRepository.deleteById(id);
+
+        Optional<Book> bookPS = bookRepository.findById(id);
+
+        assertFalse(bookPS.isPresent());
+
     }
 }
