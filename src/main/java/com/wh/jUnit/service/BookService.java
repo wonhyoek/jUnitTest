@@ -5,8 +5,8 @@ import com.wh.jUnit.web.dto.BookRespDto;
 import com.wh.jUnit.web.dto.BookSaveReqDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -16,13 +16,13 @@ import java.util.stream.Collectors;
 public class BookService {
     private final BookRepository bookRepository;
 
-    @Transactional
+    @Transactional(rollbackFor = RuntimeException.class)
     public BookRespDto createBook(BookSaveReqDto dto){
         Book bookPS = bookRepository.save(dto.toEntity());
         return new BookRespDto().toDto(bookPS);
     }
 
-    @Transactional
+    @Transactional(rollbackFor = RuntimeException.class)
     public List<BookRespDto> getBookList (){
         return bookRepository
                 .findAll()
@@ -31,7 +31,7 @@ public class BookService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional
+    @Transactional(rollbackFor = RuntimeException.class)
     public BookRespDto getOneBook(Long id){
         Optional<Book> bookOP = bookRepository.findById(id);
         if(bookOP.isPresent()){
@@ -39,5 +39,10 @@ public class BookService {
         } else {
             throw new RuntimeException("해당되는 책을 찾을 수 없습니다.");
         }
+    }
+
+    @Transactional(rollbackFor = RuntimeException.class)
+    public void deleteBook(Long id){
+        bookRepository.deleteById(id);
     }
 }
