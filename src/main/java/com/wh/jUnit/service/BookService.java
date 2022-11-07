@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -19,5 +21,12 @@ public class BookService {
         return new BookRespDto().toDto(bookPS);
     }
 
-
+    @Transactional
+    public List<BookRespDto> getBookList (){
+        return bookRepository
+                .findAll()
+                .stream()
+                .map(new BookRespDto()::toDto)
+                .collect(Collectors.toList());
+    }
 }
