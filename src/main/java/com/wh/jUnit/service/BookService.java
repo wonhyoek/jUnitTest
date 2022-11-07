@@ -1,6 +1,7 @@
 package com.wh.jUnit.service;
 import com.wh.jUnit.domain.Book;
 import com.wh.jUnit.domain.BookRepository;
+import com.wh.jUnit.util.MailSender;
 import com.wh.jUnit.web.dto.BookRespDto;
 import com.wh.jUnit.web.dto.BookSaveReqDto;
 import lombok.RequiredArgsConstructor;
@@ -15,10 +16,16 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class BookService {
     private final BookRepository bookRepository;
+    private final MailSender mailSender;
 
     @Transactional(rollbackFor = RuntimeException.class)
     public BookRespDto createBook(BookSaveReqDto dto){
         Book bookPS = bookRepository.save(dto.toEntity());
+        if(bookPS != null){
+            if(!mailSender.send()){
+                throw new RuntimeException("메일이 전송되지 않았습니다.");
+            }
+        }
         return new BookRespDto().toDto(bookPS);
     }
 
