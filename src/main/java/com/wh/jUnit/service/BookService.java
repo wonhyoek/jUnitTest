@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,5 +29,15 @@ public class BookService {
                 .stream()
                 .map(new BookRespDto()::toDto)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public BookRespDto getOneBook(Long id){
+        Optional<Book> bookOP = bookRepository.findById(id);
+        if(bookOP.isPresent()){
+            return new BookRespDto().toDto(bookOP.get());
+        } else {
+            throw new RuntimeException("해당되는 책을 찾을 수 없습니다.");
+        }
     }
 }
