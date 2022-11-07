@@ -1,5 +1,6 @@
 package com.wh.jUnit.domain;
 
+import com.wh.jUnit.web.dto.BookSaveReqDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,4 +23,9 @@ public class Book {
     private String title;
     @Column(length = 20, nullable = false)
     private String author;
+
+    public void update(BookSaveReqDto dto){
+        this.author = dto.getAuthor();
+        this.title = dto.getTitle();
+    }
 }

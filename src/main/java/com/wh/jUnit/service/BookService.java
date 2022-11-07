@@ -45,4 +45,15 @@ public class BookService {
     public void deleteBook(Long id){
         bookRepository.deleteById(id);
     }
+
+    @Transactional(rollbackFor = RuntimeException.class)
+    public void updateBook(Long id, BookSaveReqDto dto){
+        Optional<Book> bookOP = bookRepository.findById(id);
+        if(bookOP.isPresent()){
+            Book bookPS = bookOP.get();
+            bookPS.update(dto);
+        } else{
+            throw new RuntimeException("해당되는 책을 찾을 수 없습니다.");
+        }
+    }
 }
