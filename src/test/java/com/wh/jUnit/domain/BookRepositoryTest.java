@@ -81,4 +81,20 @@ public class BookRepositoryTest {
         assertFalse(bookPS.isPresent());
 
     }
+
+    @Test
+    @Sql("classpath:db/tableInit.sql")
+    public void updateBook(){
+        Long id = 1L;
+        String title = "토비의 스프링";
+        String author = "토비";
+        Book book = new Book(id, title, author);
+
+        Book bookPS = bookRepository.save(book);
+        //beforEach 때문에 1번 id가 들어가있지만 그 상태에서 id = 1인 엔티티를 저장하면 기존 데이터가 수정됨
+
+        assertEquals(id, bookPS.getId());
+        assertEquals(title, bookPS.getTitle());
+        assertEquals(author, bookPS.getAuthor());
+    }
 }
